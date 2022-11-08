@@ -6,14 +6,16 @@ type props = IButtonProps & {
     title: string;
     isLoading?: boolean;
     color?: string;
+    icon?: string;
 }
-export function Button({title, isLoading, color,...rest}: props) {
+export function Button({title, isLoading, color,icon,...rest}: props) {
   return (
     <ButtonNativeBase
     {...rest}>
       <HStack space={2}>
         {isLoading && (<Spinner color={color} ml={2}/>)}
         <Heading color={color} fontSize="md">{title}</Heading>
+
       </HStack>
     </ButtonNativeBase>
   );

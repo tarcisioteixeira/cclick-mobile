@@ -35,12 +35,12 @@ export function Home() {
   }
 
   const refetch = () => {
-    if(page < totalCountProducts){
+    if (page < totalCountProducts) {
       setPage(prev => prev + 1)
     }
   }
 
-  const handleRefresh = async() => {
+  const handleRefresh = async () => {
     setIsRefreshing(true)
     setPage(1)
   }
@@ -102,7 +102,7 @@ export function Home() {
           bg="gray.200"
           maxH={14}>
           {categories?.map(category => (
-            <Pressable key={category.id} onPress={()=> hanldeToggleCategory(category.name)}>
+            <Pressable key={category.id} onPress={() => hanldeToggleCategory(category.name)}>
               <Box
                 ml={2}>
                 <HStack
@@ -130,16 +130,16 @@ export function Home() {
             )}
             numColumns={2}
             contentContainerStyle={{
-              paddingHorizontal: 24,
-              paddingVertical: 24
+              paddingHorizontal: 10,
+              paddingVertical: 20
             }}
             onRefresh={handleRefresh}
             refreshing={isRefreshing}
             onEndReached={refetch}
             showsVerticalScrollIndicator={false}
-            onEndReachedThreshold={0.1} 
-            ListFooterComponent={isLoading && <Spinner size="lg" color="purple.900"/>}
-            />
+            onEndReachedThreshold={0.1}
+            ListFooterComponent={isLoading && <Spinner size="lg" color="purple.900" />}
+          />
         </VStack>
       </VStack>
       <BottomNavigation />

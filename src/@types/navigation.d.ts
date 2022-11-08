@@ -1,10 +1,13 @@
 export declare global {
     namespace ReactNavigation {
         interface RootParamList {
-            home: ubdefined
-            order: undefined
+            home: undefined
+            order: {
+                total: number
+            }
             cart: undefined
             search: undefined
+            favorites: undefined
             product: { 
                 productId: string 
             }

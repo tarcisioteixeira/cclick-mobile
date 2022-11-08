@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { HStack, Icon, IconButton } from 'native-base';
-import { House, ShoppingCartSimple } from 'phosphor-react-native';
+import { Heart, House, ShoppingCartSimple } from 'phosphor-react-native';
 import React from 'react';
 import { useAuth } from '../context/auth';
 
@@ -14,12 +14,21 @@ export function BottomNavigation() {
     }
 
     const handleGoToCart = () => {
-        if(isAuthenticated){
+        if (isAuthenticated) {
             navigation.navigate('cart')
             return
         }
 
-        navigation.navigate('auth', {redirectTo: 'cart'})
+        navigation.navigate('auth', { redirectTo: 'cart' })
+    }
+
+    const handleGoToFavorites = () => {
+        if (isAuthenticated) {
+            navigation.navigate('favorites')
+            return
+        }
+
+        navigation.navigate('auth', { redirectTo: 'favorites' })
     }
 
     return (
@@ -36,9 +45,19 @@ export function BottomNavigation() {
                 rounded="full"
                 _pressed={{
                     bg: "purple.900"
-                }} 
+                }}
                 onPress={handleGoHome}
-                />
+            />
+            <IconButton
+                icon={
+                    <Icon as={<Heart color="white" />} />
+                }
+                rounded="full"
+                _pressed={{
+                    bg: "purple.900"
+                }}
+                onPress={handleGoToFavorites}
+            />
             <IconButton
                 icon={
                     <Icon as={<ShoppingCartSimple color="white" />} />
@@ -46,9 +65,9 @@ export function BottomNavigation() {
                 rounded="full"
                 _pressed={{
                     bg: "purple.900"
-                }} 
+                }}
                 onPress={handleGoToCart}
-                />
+            />
         </HStack>
 
     );

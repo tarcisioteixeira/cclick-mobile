@@ -4,6 +4,7 @@ import { Order } from "../screens/Order";
 import { Search } from "../screens/Search";
 import { Home } from "../screens/Home";
 import { Product } from "../screens/Product";
+import { Favorites } from "../screens/Favorites";
 
 
 const { Navigator, Screen } = createNativeStackNavigator()
@@ -15,6 +16,7 @@ export function AuthRoutes(){
         }}>
             <Screen name="home" component={Home}/>
             <Screen name="cart" component={Cart}/>
+            <Screen name="favorites" component={Favorites}/>
             <Screen name="order" component={Order}/>
             <Screen name="search" component={Search}/>
             <Screen name="product" component={Product}/>
