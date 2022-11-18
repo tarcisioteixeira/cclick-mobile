@@ -1,18 +1,19 @@
 import MasonryList from '@react-native-seoul/masonry-list';
 import { useNavigation } from '@react-navigation/native';
 import {
-    AspectRatio,
     Badge,
-    Box, Center, Heading,
+    Box,
+    Heading,
     HStack,
     Icon,
     IconButton,
-    Image,
-    Pressable,
-    Text, useTheme, VStack
+    useTheme,
+    VStack
 } from 'native-base';
-import { CaretLeft, Heart, HeartBreak } from 'phosphor-react-native';
-import React from 'react';
+import { CaretLeft, Heart } from 'phosphor-react-native';
+import React, { useEffect, useState } from 'react';
+import { BottomNavigation } from '../components/BottomNavigation';
+import { FavoriteBase } from '../components/FavoriteBase';
 import { useFavorite } from '../hooks/useFavorite';
 
 export function Favorites() {
@@ -23,32 +24,30 @@ export function Favorites() {
         navigation.goBack()
     }
 
-    const handleGoToDeatail = (id: string) => {
-        navigation.navigate('product',{ productId: id })
-    }
-
+    const [favorites, setFavorites] = useState([])
+    
     const { colors } = useTheme()
-
     const { favoriteItems, removeFromFavorites } = useFavorite()
 
+   
     return (
-        <VStack flex={1} bg="purple.800">
+        <VStack flex={1} bg="white">
 
             <HStack
                 pt={12}
                 pb={2}
                 justifyContent="space-between"
                 alignItems="center"
-                bg="purple.800"
+                bg="white"
                 px={4}>
                 <HStack space={1} alignItems="center">
                     <IconButton
                         onPress={handleGoBack}
                         _pressed={{
-                            bg: "purple.800"
+                            bg: "gray.100"
                         }}
-                        icon={<Icon as={<CaretLeft color="white" weight='bold' />} />} />
-                    <Heading color="purple.100" fontSize={20}>your favorites</Heading>
+                        icon={<Icon as={<CaretLeft color={colors.purple[900]} weight='bold' />} />} />
+                    <Heading color="purple.900" fontSize={20}>your favorites</Heading>
                 </HStack>
                 <Box>
 
@@ -61,11 +60,11 @@ export function Favorites() {
                             mb={-2}
                             zIndex={1}
                             borderWidth="3"
-                            borderColor="purple.800">
+                            borderColor="white">
                             {favoriteItems.length}
                         </Badge>
                     )}
-                    <Heart color="white" />
+                    <Heart color={colors.purple[900]} weight="bold" />
 
                 </Box>
             </HStack>
@@ -75,7 +74,7 @@ export function Favorites() {
                 flex={1}
                 borderTopLeftRadius={16}
                 borderTopRightRadius={16}
-                bg="gray.200">
+                bg="gray.300">
 
                 <MasonryList
                     data={favoriteItems}
@@ -83,58 +82,18 @@ export function Favorites() {
                     numColumns={2}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
-                        paddingHorizontal: 10,
-                        paddingVertical: 20
+                        paddingTop: 4,
+                        paddingBottom: 16,
+                        paddingRight: 4 
                     }}
                     renderItem={({ item }: any) => (
-                        <Pressable
-                            shadow={9}
-                            bg="white"
-                            rounded="md"
-                            ml={1}
-                            mt={1}
-                            borderWidth={1}
-                            borderColor="gray.100"
-                            position="relative"
-                            onPress={()=> handleGoToDeatail(item.id)}
-                        >
-                            <VStack>
-                                <Center bg="gray.100" roundedTopLeft="lg" roundedTopRight="lg">
-                                    <AspectRatio ratio={{
-                                        base: 3 / 4,
-                                        md: 9 / 10
-                                    }} height={{
-                                        base: 200,
-                                        md: 400
-                                    }}>
-                                        <Image alt={`imagem de ${item?.name}`} source={{
-                                            uri: item?.avatarUrl
-                                        }} />
-                                    </AspectRatio>
-                                </Center>
-                                <HStack justifyContent="space-between" alignItems="center">
-
-                                    <VStack py={1} px={2}>
-                                        <Heading fontSize="md">{item?.name}</Heading>
-                                        <Text>{item?.price}</Text>
-                                    </VStack>
-
-                                    <IconButton
-                                        onPress={() => removeFromFavorites(item.id)}
-                                        _pressed={{
-                                            bg: "purple.200"
-                                        }}
-                                        icon={<Icon as={<HeartBreak color={colors.purple[800]} weight='bold' />} />} />
-
-                                </HStack>
-
-                            </VStack>
-                        </Pressable>
+                        <FavoriteBase favorite={item} removeFromFavorite={removeFromFavorites}/>
                     )}
 
                 />
 
             </VStack>
+            <BottomNavigation route="favorites" />
         </VStack>
 
     );

@@ -1,8 +1,7 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Box, Center, Heading, Icon, IconButton, Text, Toast, useTheme, VStack } from 'native-base';
+import { Box, Center, Heading, HStack, Icon, IconButton, Text, Toast, useTheme, VStack } from 'native-base';
 import { Envelope, Eye, EyeSlash, LockKey } from 'phosphor-react-native';
 import React, { useState } from 'react';
-import { useMutation } from 'react-query';
 import { Button } from '../components/Button';
 import { TextField } from '../components/TextField';
 import { useAuth } from '../context/auth';
@@ -36,7 +35,7 @@ export function Signin() {
 
     const { setUserId } = useAuth()
 
-    
+
     const handleSignin = async () => {
 
         try {
@@ -45,9 +44,9 @@ export function Signin() {
             setIsLoading(false)
             setUserId(data.userId)
 
-            setTimeout(()=> {
+            setTimeout(() => {
                 navigation.navigate<any>(redirectTo)
-            },10)
+            }, 10)
             return data
         } catch (error: any) {
             Toast.show({
@@ -73,31 +72,41 @@ export function Signin() {
     }
 
     return (
-        <VStack flex={1} bg="purple.900" px={4}>
-            <Center flex={1} bg="purple.900">
-                <Heading color="purple.100">Acesse a sua conta</Heading>
+        <VStack flex={1} bg="white" px={4}>
+
+            <Center flex={1} bg="white">
+                <VStack  w="full" px="2">
+                    <Heading color="purple.900">Login</Heading>
+                    <Text color="purple.800" fontWeight="bold">Acesse a sua conta para continuar</Text>
+                </VStack>
                 <VStack w="full" py={8} px={2} rounded="md">
                     <TextField
                         placeholder="E-mail"
-                        bg="purple.800"
-                        color="white"
+                        borderWidth={2}
+                        borderColor="white"
+                        shadow={9}
+                        bg="gray.50"
+                        color="gray.600"
                         placeholderTextColor="gray.400"
-                        selectionColor="purple.100"
+                        selectionColor="purple.900"
                         mb={1}
                         InputLeftElement={<Icon ml={4} as={<Envelope color={colors.gray[400]} />} />}
                         _focus={{
                             borderWidth: 2,
-                            borderColor: "purple.600",
-                            bg: "purple.900"
+                            borderColor: "purple.900",
+                            bg: "gray.50"
                         }}
                         onChangeText={setLogin} />
 
                     <TextField
                         placeholder="password"
-                        bg="purple.800"
-                        color="white"
+                        bg="gray.50"
+                        borderWidth={2}
+                        borderColor="white"
+                        shadow={9}
+                        color="gray.600"
                         placeholderTextColor="gray.400"
-                        selectionColor="purple.100"
+                        selectionColor="purple.900"
                         InputLeftElement={<Icon ml={4} as={<LockKey color={colors.gray[400]} />} />}
                         InputRightElement={
                             isShowingPassword ?
@@ -105,7 +114,7 @@ export function Signin() {
                                     onPress={handlePasswordShow}
                                     mr={4}
                                     icon={<Icon as={<Eye color={colors.gray[400]} />} />}
-                                    _pressed={{ bg: "purple.900" }}
+                                    _pressed={{ bg: "gray.50" }}
                                 />
                                 : <IconButton
                                     onPress={handlePasswordShow}
@@ -114,14 +123,14 @@ export function Signin() {
                                         <EyeSlash color={colors.gray[400]} />
                                     }
                                     />}
-                                    _pressed={{ bg: "purple.900" }}
+                                    _pressed={{ bg: "gray.50" }}
                                 />
                         }
                         mb={4}
                         _focus={{
                             borderWidth: 2,
-                            borderColor: "purple.600",
-                            bg: "purple.900"
+                            borderColor: "purple.900",
+                            bg: "gray.50"
                         }}
                         onChangeText={setPassword}
                         secureTextEntry={isShowingPassword}
@@ -131,8 +140,6 @@ export function Signin() {
                         title="login"
                         w="full"
                         bg="purple.900"
-                        borderWidth={2}
-                        borderColor="purple.600"
                         color="purple.100"
                         isLoading={isLoading}
                         h={14}
@@ -143,6 +150,9 @@ export function Signin() {
 
                 </VStack>
             </Center>
+            <HStack py={8} space={3} justifyContent="center">
+                <Text fontWeight="bold">não tem uma conta?</Text><Text fontWeight="bold" color="purple.800">Click aqui</Text>
+            </HStack>
         </VStack>
     );
 }

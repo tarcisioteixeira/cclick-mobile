@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
-import { AspectRatio, Heading, Image, Pressable, Text, VStack } from 'native-base';
-import React from 'react';
+import { Heading, Pressable, Text, VStack } from 'native-base';
+import React, { useState } from 'react';
+import { Image as ImageNT, StyleSheet } from 'react-native';
 
 export type ProductProps = {
     id: string;
@@ -15,6 +16,12 @@ type BaseProductProps = {
 
 export function BaseProduct({ data }: BaseProductProps) {
 
+    const [ratio, setRatio] = useState(1 / 2)
+
+    ImageNT.getSize(data.avatarUrl, (width, height) => {
+        setRatio(width / height)
+    })
+
     const navigation = useNavigation()
 
     const handleGoToDetail = () => {
@@ -23,28 +30,23 @@ export function BaseProduct({ data }: BaseProductProps) {
 
     return (
         <Pressable
-            flex={1}
-            ml={1}
             mt={1}
+            ml={1}
+            flex={1}
+            rounded="xl"
             bg="white"
-            rounded="md"
             shadow={9}
+            borderWidth={1}
+            borderColor="gray.100"
             onPress={handleGoToDetail}>
             <VStack
                 rounded="lg"
-                borderWidth={1}
-                borderColor="gray.100">
-                <AspectRatio ratio={{
-                    base: 3 / 4,
-                    md: 9 / 10
-                }} height={{
-                    base: 200,
-                    md: 400
-                }}>
-                    <Image resizeMode="cover" source={{
-                        uri: data.avatarUrl
-                    }} alt="Picture of a Flower" />
-                </AspectRatio>
+            >
+
+                <ImageNT resizeMode="cover" source={{
+                    uri: data.avatarUrl
+                }} style={[styles.image, { aspectRatio: ratio }]} />
+
                 <VStack py={1} px={2}>
                     <Heading fontSize="md">{data.name}</Heading>
                     <Text>{data.price}</Text>
@@ -54,3 +56,11 @@ export function BaseProduct({ data }: BaseProductProps) {
         </Pressable>
     );
 }
+
+const styles = StyleSheet.create({
+    image: {
+        width: '100%',
+        borderTopLeftRadius: 13,
+        borderTopRightRadius: 13
+    }
+})

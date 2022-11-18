@@ -22,7 +22,7 @@ export default function App() {
       <QueryClientProvider client={client}>
         <AuthProvider>
           <StatusBar
-            barStyle='light-content'
+            barStyle='dark-content'
             backgroundColor='transparent'
             translucent />
           {

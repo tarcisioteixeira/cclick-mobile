@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { AspectRatio, Box, Button, Center, Heading, HStack, Icon, IconButton, Image, KeyboardAvoidingView, Select, Spinner, Text, useTheme, VStack } from 'native-base';
-import { CaretLeft, Heart, ShoppingCartSimple } from 'phosphor-react-native';
+import { CaretLeft, Check, Heart, HeartBreak, ShoppingCartSimple } from 'phosphor-react-native';
 import React, { useState } from 'react';
 import { Platform } from 'react-native';
 import { useQuery } from 'react-query';
@@ -30,11 +30,16 @@ export function Product() {
 
     const navigation = useNavigation()
     const route = useRoute()
+    const { colors } = useTheme()
     const { addToCart, cartItems } = useCart()
-    const { addToFavorites } = useFavorite()
+    const { addToFavorites, favoriteItems } = useFavorite()
+    const [isAddedInCart, setIsAddedInCart] = useState(false)
+
+
 
     const { productId } = route.params as ProductQueryParams
-    const [unity, setUnity] = useState('')
+    const [unity, setUnity] = useState('unidades')
+    const [showBottomNavigation, setShowBottomNavigation] = useState(true)
     const [qty, setQty] = useState(1)
 
     const handleGoBack = () => {
@@ -43,53 +48,57 @@ export function Product() {
 
     const { data } = useQuery<ProductParams>(['product', productId], async () => {
         const { data } = await useApi.get(`/product/${productId}`)
-        console.log(data)
         return data
     })
 
-    const handleAdToFavorites = () => {
+    const itIsInFavorites = favoriteItems?.find(favorite => favorite.id == data?.id)
+    const itIsInCart = cartItems?.find(cart => cart.id == data?.id)
+
+    const handleAddToFavorites = () => {
         const dataToFavorites = {
-            id: data.id,
-            price: data.price,
-            name: data.name,
-            avatarUrl: data.avatarUrl
+            id: data?.id,
+            price: data?.price,
+            name: data?.name,
+            avatarUrl: data?.avatarUrl
         }
+
+        addToFavorites(dataToFavorites)
     }
 
-    const handleAdTocart = () => {
+    const handleAddToCart = () => {
         const dataTocart = {
-            id: data.id,
+            id: data?.id,
             unity,
             qty,
-            price: data.price,
-            name: data.name,
-            avatarUrl: data.avatarUrl
+            price: data?.price,
+            name: data?.name,
+            avatarUrl: data?.avatarUrl
         }
 
         addToCart(dataTocart)
+        setIsAddedInCart(true)
+        setShowBottomNavigation(true)
+
     }
 
-    const { colors } = useTheme()
 
     const [isLoading, setIsLoading] = useState(false)
 
     return (
-        <VStack flex={1} bg="purple.800">
-            <HStack pt={12} space={3} alignItems="center" bg="purple.800" px={4}>
+        <VStack flex={1} bg="white">
+            <HStack pt={12} space={3} alignItems="center" bg="white" px={4}>
                 <IconButton
                     onPress={handleGoBack}
                     _pressed={{
-                        bg: "purple.800"
+                        bg: "gray.100"
                     }}
-                    icon={<Icon as={<CaretLeft color="white" weight='bold' />} />} />
-                <Heading color="purple.100">Detalhes</Heading>
+                    icon={<Icon as={<CaretLeft color={colors.purple[900]} weight='bold' />} />} />
+                <Heading color="purple.900">Detalhes</Heading>
             </HStack>
             <VStack
                 flex={1}
-                bg="gray.50"
-                borderBottomLeftRadius={20}
-                borderBottomRightRadius={20}>
-                <Box bg="gray.50" pt={8}>
+                bg="gray.200">
+                <Box bg="gray.200" pt={8}>
                     <Center
                         minH='1/2'
                         flex={1}
@@ -111,9 +120,19 @@ export function Product() {
                                 <Text color="purple.800" fontSize="xl">{data?.price}</Text>
                             </VStack>
                             <Box>
-                                <IconButton icon={
-                                    <Icon as={<Heart color={colors.purple[800]} />} />
-                                } borderRadius="full" />
+                                <IconButton
+                                    icon={
+                                        <Icon as={
+                                            itIsInFavorites
+                                                ?
+                                                <HeartBreak color={colors.purple[800]} weight='bold' />
+                                                :
+                                                <Heart color={colors.purple[800]} />
+                                        }
+                                        />
+                                    }
+                                    borderRadius="full"
+                                    onPress={handleAddToFavorites} />
                             </Box>
                         </HStack>
                     </VStack>
@@ -129,42 +148,53 @@ export function Product() {
                                 flex={1}
                                 borderColor="gray.200"
                                 borderWidth={1}
-                                placeholder="qty"
+                                placeholder="quantidade"
+                                keyboardType="number-pad"
                                 h={12}
                                 placeholderTextColor="purple.900"
-                                selectionColor="purple.100"
-                                bg="gray.50"
-                                
+                                bg="white"
+                                onPressIn={() => setShowBottomNavigation(false)}
                                 onChangeText={(e) => setQty(Number(e))} />
-                            <Select minWidth="170" accessibilityLabel="unidades" placeholder="unidades" >
-                                <Select.Item label="unidades" value="ux" />
-                                <Select.Item label="Toneladas" value="ux" />
-                                <Select.Item label="Caixas" value="ux" />
+                            <Select
+                                minWidth="170"
+                                selectedValue={unity}
+                                accessibilityLabel={unity}
+                                placeholder={unity}
+                                bg="white"
+                                borderColor="white"
+                                onValueChange={setUnity}
+                                onOpen={() => setShowBottomNavigation(true)}>
+                                <Select.Item label="unidades" value="Unidades" />
+                                <Select.Item label="Toneladas" value="Toneladas" />
+                                <Select.Item label="Caixas" value="Caixas" />
                             </Select>
                         </HStack>
                         <VStack
                             px={4}
                             mt={8}>
                             <Button
-                                bg="purple.700"
+                                bg="purple.900"
                                 _pressed={{
                                     bg: "purple.900",
                                 }}
-                                onPress={handleAdTocart}>
+                                onPress={handleAddToCart}>
                                 <HStack
                                     space={2}
                                     alignItems="center">
                                     <Text color="gray.50">
-                                        add
+                                        {isAddedInCart ? 'successfuly added in cart' : 'add'}
                                     </Text>
-                                    {isLoading ? <Spinner color="gray.50" ml={2} /> : <ShoppingCartSimple color={colors.gray[50]} />}
+                                    {
+                                        isAddedInCart ? <Check color={colors.gray[50]} />
+                                            : isLoading ? <Spinner color="gray.50" ml={2} /> : <ShoppingCartSimple color={colors.gray[50]} />
+                                    }
                                 </HStack>
                             </Button>
                         </VStack>
                     </KeyboardAvoidingView>
                 </Box>
             </VStack>
-            <BottomNavigation />
+            {showBottomNavigation && <BottomNavigation />}
         </VStack>
     );
 }

@@ -35,11 +35,13 @@ export function useFavorite() {
 
 
             AsyncStorage.setItem('@favorites', JSON.stringify(newFavorites));
+            setRefetch(true)
             return
         }
 
         const newFavorites = [...favoriteItems, data]
         AsyncStorage.setItem('@favorites', JSON.stringify(newFavorites))
+        setRefetch(true)
     }
 
     const removeFromFavorites = (id: string) => {

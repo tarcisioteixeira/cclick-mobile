@@ -1,11 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
-import { Box, Center, FlatList, HStack, Icon, Image, Pressable, ScrollView, Spinner, Text, useTheme, VStack } from 'native-base';
+import { Box, Center, HStack, Icon, Image, Pressable, ScrollView, Spinner, Text, useTheme, VStack } from 'native-base';
 import { MagnifyingGlass } from 'phosphor-react-native';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { BaseProduct } from '../components/BaseProduct';
 import { BottomNavigation } from '../components/BottomNavigation';
 import { useApi } from '../services/axios';
+import MasonryList from '@react-native-seoul/masonry-list';
+
+import { products as prod } from '../hooks/mock';
 
 type ProductParams = {
   id: string;
@@ -51,6 +54,7 @@ export function Home() {
     slug: string;
   }>>('categories', async () => {
     const { data } = await useApi.get('/categories-only')
+    console.log(data)
     return data
   })
 
@@ -68,9 +72,9 @@ export function Home() {
   const { colors } = useTheme()
 
   return (
-    <VStack flex={1} bg="purple.800">
+    <VStack flex={1} bg="white">
 
-      <HStack bg="purple.800" py={4} w="full" pt={12} px={4}>
+      <HStack bg="white" py={2} w="full" pt={12} px={4}>
         <Pressable
           w="full"
           flexDirection="row"
@@ -83,19 +87,20 @@ export function Home() {
             px={4}
             py={2}
             rounded="md"
-            bg="purple.900"
+            borderWidth={1}
+            borderColor="white"
+            bg="gray.50"
+            shadow={9}
           >
-            <Text color="purple.100">Pesquise aqui...</Text>
-            <Icon as={<MagnifyingGlass color={colors.purple[100]} />} />
+            <Text color="purple.900">Pesquise aqui...</Text>
+            <Icon as={<MagnifyingGlass color={colors.purple[900]} weight="bold"/>} />
           </Box>
         </Pressable>
       </HStack>
 
       <VStack
         flex={1}
-        borderBottomLeftRadius={20}
-        borderBottomRightRadius={20}
-        bg="gray.50">
+        bg="gray.300">
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
@@ -122,27 +127,24 @@ export function Home() {
           ))}
         </ScrollView>
         <VStack flex={1}>
-          <FlatList
+         <MasonryList
             data={products}
-            keyExtractor={product => product.id}
-            renderItem={({ item }) => (
-              <BaseProduct data={item} />
-            )}
+            keyExtractor={item => item.id}
             numColumns={2}
-            contentContainerStyle={{
-              paddingHorizontal: 10,
-              paddingVertical: 20
-            }}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }:any) => <BaseProduct data={item} />}
             onRefresh={handleRefresh}
             refreshing={isRefreshing}
             onEndReached={refetch}
-            showsVerticalScrollIndicator={false}
             onEndReachedThreshold={0.1}
             ListFooterComponent={isLoading && <Spinner size="lg" color="purple.900" />}
-          />
+            contentContainerStyle={{
+              paddingBottom: 16,
+            }}
+          /> 
         </VStack>
       </VStack>
-      <BottomNavigation />
+      <BottomNavigation route="cart"/>
     </VStack>
   );
 }

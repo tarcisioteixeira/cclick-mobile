@@ -1,10 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
-import { HStack, Icon, IconButton } from 'native-base';
+import { HStack, Icon, IconButton, useTheme } from 'native-base';
 import { Heart, House, ShoppingCartSimple } from 'phosphor-react-native';
 import React from 'react';
 import { useAuth } from '../context/auth';
 
-export function BottomNavigation() {
+interface INavigateProps {
+    route?: string
+}
+
+export function BottomNavigation({route}: INavigateProps) {
 
     const { isAuthenticated } = useAuth()
     const navigation = useNavigation()
@@ -12,6 +16,8 @@ export function BottomNavigation() {
     const handleGoHome = () => {
         navigation.navigate('home')
     }
+
+    const { colors } = useTheme()
 
     const handleGoToCart = () => {
         if (isAuthenticated) {
@@ -33,38 +39,54 @@ export function BottomNavigation() {
 
     return (
         <HStack
-            bg="purple.800"
+            bg="white"
             h={14}
             alignItems="center"
             justifyContent="center"
-            space={3}>
+            space={3}
+            shadow={9}>
             <IconButton
                 icon={
-                    <Icon as={<House color="white" />} />
+                    <Icon as={<House color={colors.purple[800] } weight="bold"/>} />
                 }
                 rounded="full"
+                bg="gray.200"
+                borderWidth="3"
+                borderColor="white"
+                mt={-19}
+                shadow={9}
                 _pressed={{
-                    bg: "purple.900"
+                    bg: "gray.100"
                 }}
                 onPress={handleGoHome}
             />
             <IconButton
                 icon={
-                    <Icon as={<Heart color="white" />} />
+                    <Icon as={<Heart color={colors.purple[800] } weight="bold"/>} />
                 }
+                bg="gray.200"
+                borderWidth="3"
+                borderColor="white"
+                mt={-19}
+                shadow={9}
                 rounded="full"
                 _pressed={{
-                    bg: "purple.900"
+                    bg: "gray.100"
                 }}
                 onPress={handleGoToFavorites}
             />
             <IconButton
                 icon={
-                    <Icon as={<ShoppingCartSimple color="white" />} />
+                    <Icon as={<ShoppingCartSimple color={colors.purple[800] } weight="bold"/>} />
                 }
+                bg="gray.200"
                 rounded="full"
+                borderWidth="3"
+                borderColor="white"
+                mt={-19}
+                shadow={9}
                 _pressed={{
-                    bg: "purple.900"
+                    bg: "gray.100"
                 }}
                 onPress={handleGoToCart}
             />
